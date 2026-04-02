@@ -1,0 +1,169 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+  updatedDate?: Date;
+  heroImage?: string;
+  category: string;
+  tags: string[];
+  lang: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  readingTime: number;
+  slug: string;
+}
+
+const {
+  title,
+  description,
+  publishDate,
+  updatedDate,
+  heroImage,
+  category,
+  tags,
+  lang,
+  seoTitle,
+  seoDescription,
+  readingTime,
+  slug,
+} = Astro.props;
+
+const categoryLabels: Record<string, string> = {
+  'guide': 'Guida',
+  'case-study': 'Case Study',
+  'news': 'News',
+  'tutorial': 'Tutorial',
+  'opinione': 'Opinione',
+};
+
+const formattedDate = publishDate.toLocaleDateString('it-IT', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+});
+
+const formattedUpdated = updatedDate?.toLocaleDateString('it-IT', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+});
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: seoTitle || title,
+  description: seoDescription || description,
+  image: heroImage ? new URL(heroImage, Astro.site).toString() : undefined,
+  datePublished: publishDate.toISOString(),
+  dateModified: (updatedDate || publishDate).toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Edoardo Gentile',
+    url: 'https://mechloops.com',
+    jobTitle: 'Fondatore',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Mechloops',
+      url: 'https://mechloops.com',
+    },
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Mechloops',
+    url: 'https://mechloops.com',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': new URL(`/blog/${slug}`, Astro.site).toString(),
+  },
+  articleSection: categoryLabels[category] || category,
+  keywords: tags.join(', '),
+  wordCount: readingTime * 200,
+  inLanguage: lang === 'it' ? 'it-IT' : 'en-US',
+};
+---
+
+<Layout
+  title={seoTitle || title}
+  description={seoDescription || description}
+  image={heroImage}
+  type="article"
+  publishDate={publishDate}
+  jsonLd={jsonLd}
+>
+  <article class="max-w-4xl mx-auto px-6 py-12">
+    <!-- Header -->
+    <header class="mb-10">
+      <div class="flex items-center gap-3 mb-4 text-sm">
+        <span class="bg-brand-cyan/10 text-brand-blue font-semibold px-3 py-1 rounded-full text-xs uppercase tracking-wide">
+          {categoryLabels[category] || category}
+        </span>
+        <span class="text-brand-gray">{formattedDate}</span>
+        {formattedUpdated && <span class="text-brand-gray">(agg. {formattedUpdated})</span>}
+        <span class="text-brand-gray">{readingTime} min di lettura</span>
+      </div>
+
+      <h1 class="font-[var(--font-display)] text-3xl md:text-4xl lg:text-5xl font-extrabold text-brand-black leading-tight mb-4">
+        {title}
+      </h1>
+
+      <p class="text-lg text-brand-gray max-w-2xl">
+        {description}
+      </p>
+
+      <!-- Author -->
+      <div class="flex items-center gap-3 mt-6 pt-6 border-t border-brand-light">
+        <div class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-sm">EG</div>
+        <div>
+          <div class="font-semibold text-brand-black text-sm">Edoardo Gentile</div>
+          <div class="text-xs text-brand-gray">Fondatore, Mechloops</div>
+        </div>
+      </div>
+    </header>
+
+    {heroImage && (
+      <img
+        src={heroImage}
+        alt={title}
+        class="w-full rounded-xl mb-10 shadow-sm"
+      />
+    )}
+
+    <!-- Content -->
+    <div class="prose mx-auto">
+      <slot />
+    </div>
+
+    <!-- Tags -->
+    {tags.length > 0 && (
+      <div class="mt-12 pt-6 border-t border-brand-light">
+        <div class="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span class="text-xs bg-brand-light text-brand-gray px-3 py-1 rounded-full">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- CTA -->
+    <div class="mt-12 bg-gradient-to-br from-brand-black to-[#1a1a2e] rounded-2xl p-8 md:p-10 text-center">
+      <h3 class="font-[var(--font-display)] text-2xl font-bold text-white mb-3">
+        La tua azienda potrebbe risparmiare 10+ ore a settimana
+      </h3>
+      <p class="text-gray-400 mb-6 max-w-lg mx-auto">
+        Scopri in 2 minuti quanto la tua PMI e' pronta per l'AI con il nostro assessment gratuito.
+      </p>
+      <a
+        href="https://mechloops.com/#assessment"
+        class="inline-block bg-brand-cyan text-brand-black font-bold px-8 py-3 rounded-xl hover:brightness-110 transition"
+      >
+        Fai l'AI Assessment Gratuito
+      </a>
+    </div>
+  </article>
+</Layout>

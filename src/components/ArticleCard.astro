@@ -1,0 +1,55 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+  category: string;
+  slug: string;
+  heroImage?: string;
+  readingTime: number;
+}
+
+const { title, description, publishDate, category, slug, heroImage, readingTime } = Astro.props;
+
+const categoryLabels: Record<string, string> = {
+  'guide': 'Guida',
+  'case-study': 'Case Study',
+  'news': 'News',
+  'tutorial': 'Tutorial',
+  'opinione': 'Opinione',
+};
+
+const formattedDate = publishDate.toLocaleDateString('it-IT', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<article class="group">
+  <a href={`/blog/${slug}`} class="block">
+    {heroImage && (
+      <div class="overflow-hidden rounded-lg mb-4">
+        <img
+          src={heroImage}
+          alt={title}
+          class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+        />
+      </div>
+    )}
+    <div class="flex items-center gap-3 mb-2 text-sm">
+      <span class="bg-brand-cyan/10 text-brand-blue font-semibold px-2.5 py-0.5 rounded-full text-xs uppercase tracking-wide">
+        {categoryLabels[category] || category}
+      </span>
+      <span class="text-brand-gray">{formattedDate}</span>
+      <span class="text-brand-gray">{readingTime} min</span>
+    </div>
+    <h2 class="font-[var(--font-display)] text-xl font-bold text-brand-black group-hover:text-brand-blue transition-colors mb-2 leading-tight">
+      {title}
+    </h2>
+    <p class="text-brand-gray text-sm leading-relaxed line-clamp-2">
+      {description}
+    </p>
+  </a>
+</article>
