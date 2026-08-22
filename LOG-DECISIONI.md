@@ -11,7 +11,7 @@
 ## 2026-08-22 — standard repository
 
 - Il sito resta un'unica unità nella madre; non serve una sottorepo ulteriore.
-- Configurazioni Astro, Node, TypeScript e Vercel restano in radice perché la
-  piattaforma le rileva lì.
+- Il runtime Astro è raccolto in `codice/`; Vercel deve usare quella cartella
+  come Root Directory.
 - Il README generico dello starter Astro è stato archiviato: non descriveva il
   sistema reale.

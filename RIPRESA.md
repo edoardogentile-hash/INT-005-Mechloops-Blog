@@ -14,14 +14,15 @@ Astro 6 ad Astro 7: aggiornarlo e collaudarlo separatamente, senza
 
 Non risultano interventi di codice aperti in questa repo. La crescita del
 catalogo editoriale va coordinata con il Marketing Center e verificata contro
-lo schema di `src/content.config.ts`.
+lo schema di `codice/src/content.config.ts`.
 
 ## Controllo prima della pubblicazione
 
-1. Eseguire `npm run build` senza warning bloccanti.
+1. Eseguire `cd codice && npm run build` senza warning bloccanti.
 2. Aprire `/blog/` e almeno una route articolo nell'anteprima locale.
 3. Verificare canonical URL, sitemap, metadata e link esterni.
-4. Controllare che `dist/`, `.astro/` e `node_modules/` non siano tracciati.
+4. Controllare che `codice/dist/`, `codice/.astro/` e
+   `codice/node_modules/` non siano tracciati.
 
 Il server locale sulla porta 4321 va riavviato nel collaudo finale del
 workspace.
